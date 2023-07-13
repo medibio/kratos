@@ -283,3 +283,43 @@ func NewNoWebAuthnCredentials() error {
 		Messages: new(text.Messages).Add(text.NewErrorValidationSuchNoWebAuthnUser()),
 	})
 }
+
+func NewNoCodeAuthnCredentials() error {
+	return errors.WithStack(&ValidationError{
+		ValidationError: &jsonschema.ValidationError{
+			Message:     `account does not exist or has not setup up sign in with code`,
+			InstancePtr: "#/",
+		},
+		Messages: new(text.Messages).Add(text.NewErrorValidationNoCodeUser()),
+	})
+}
+
+func NewTraitsMismatch() error {
+	return errors.WithStack(&ValidationError{
+		ValidationError: &jsonschema.ValidationError{
+			Message:     `the provided traits do not match the traits previously associated with this flow`,
+			InstancePtr: "#/",
+		},
+		Messages: new(text.Messages).Add(text.NewErrorValidationTraitsMismatch()),
+	})
+}
+
+func NewRegistrationCodeInvalid() error {
+	return errors.WithStack(&ValidationError{
+		ValidationError: &jsonschema.ValidationError{
+			Message:     `the registration code is invalid or has already been used. Please try again.`,
+			InstancePtr: "#/",
+		},
+		Messages: new(text.Messages).Add(text.NewErrorValidationRegistrationCodeInvalidOrAlreadyUsed()),
+	})
+}
+
+func NewLoginCodeInvalid() error {
+	return errors.WithStack(&ValidationError{
+		ValidationError: &jsonschema.ValidationError{
+			Message:     `the login code is invalid or has already been used. Please try again.`,
+			InstancePtr: "#/",
+		},
+		Messages: new(text.Messages).Add(text.NewErrorValidationLoginCodeInvalidOrAlreadyUsed()),
+	})
+}

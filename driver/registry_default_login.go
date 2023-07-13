@@ -34,6 +34,10 @@ func (m *RegistryDefault) PostLoginHooks(ctx context.Context, credentialsType id
 		}
 	}
 
+	if credentialsType == identity.CredentialsTypeCodeAuth && m.Config().SelfServiceCodeStrategy(ctx).LoginEnabled {
+		b = append(b, m.HookCodeAddressVerifier())
+	}
+
 	if len(b) == 0 {
 		// since we don't want merging hooks defined in a specific strategy and global hooks
 		// global hooks are added only if no strategy specific hooks are defined

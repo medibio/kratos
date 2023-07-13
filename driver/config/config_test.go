@@ -381,8 +381,10 @@ func TestViperProvider(t *testing.T) {
 
 		t.Run("group=hashers", func(t *testing.T) {
 			c := p.HasherArgon2(ctx)
-			assert.Equal(t, &config.Argon2{Memory: 1048576, Iterations: 2, Parallelism: 4,
-				SaltLength: 16, KeyLength: 32, DedicatedMemory: config.Argon2DefaultDedicatedMemory, ExpectedDeviation: config.Argon2DefaultDeviation, ExpectedDuration: config.Argon2DefaultDuration}, c)
+			assert.Equal(t, &config.Argon2{
+				Memory: 1048576, Iterations: 2, Parallelism: 4,
+				SaltLength: 16, KeyLength: 32, DedicatedMemory: config.Argon2DefaultDedicatedMemory, ExpectedDeviation: config.Argon2DefaultDeviation, ExpectedDuration: config.Argon2DefaultDuration,
+			}, c)
 		})
 
 		t.Run("group=set_provider_by_json", func(t *testing.T) {
@@ -500,6 +502,8 @@ func TestViperProvider_Defaults(t *testing.T) {
 				assert.True(t, p.SelfServiceStrategy(ctx, "profile").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "link").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "code").Enabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).RegistrationEnabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).LoginEnabled)
 				assert.False(t, p.SelfServiceStrategy(ctx, "oidc").Enabled)
 			},
 		},
@@ -515,6 +519,8 @@ func TestViperProvider_Defaults(t *testing.T) {
 				assert.True(t, p.SelfServiceStrategy(ctx, "profile").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "link").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "code").Enabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).RegistrationEnabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).LoginEnabled)
 				assert.False(t, p.SelfServiceStrategy(ctx, "oidc").Enabled)
 			},
 		},
@@ -530,6 +536,8 @@ func TestViperProvider_Defaults(t *testing.T) {
 				assert.False(t, p.SelfServiceStrategy(ctx, "link").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "code").Enabled)
 				assert.True(t, p.SelfServiceStrategy(ctx, "oidc").Enabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).LoginEnabled)
+				assert.False(t, p.SelfServiceCodeStrategy(ctx).RegistrationEnabled)
 			},
 		},
 		{
@@ -556,6 +564,8 @@ func TestViperProvider_Defaults(t *testing.T) {
 			assert.False(t, p.SelfServiceStrategy(ctx, "link").Enabled)
 			assert.True(t, p.SelfServiceStrategy(ctx, "code").Enabled)
 			assert.False(t, p.SelfServiceStrategy(ctx, "oidc").Enabled)
+			assert.False(t, p.SelfServiceCodeStrategy(ctx).LoginEnabled)
+			assert.False(t, p.SelfServiceCodeStrategy(ctx).RegistrationEnabled)
 
 			assert.False(t, p.SelfServiceFlowRecoveryNotifyUnknownRecipients(ctx))
 			assert.False(t, p.SelfServiceFlowVerificationNotifyUnknownRecipients(ctx))
@@ -884,7 +894,6 @@ func TestLoadingTLSConfig(t *testing.T) {
 		assert.Equal(t, "Unable to load HTTPS TLS Certificate", hook.LastEntry().Message)
 		assert.True(t, *exited)
 	})
-
 }
 
 func TestIdentitySchemaValidation(t *testing.T) {
@@ -1008,7 +1017,6 @@ func TestIdentitySchemaValidation(t *testing.T) {
 			assert.Error(t, e)
 			assert.Contains(t, e.Error(), "Client.Timeout")
 		}
-
 	})
 
 	t.Run("case=validate schema is validated on file change", func(t *testing.T) {
@@ -1037,7 +1045,7 @@ func TestIdentitySchemaValidation(t *testing.T) {
 
 				// There are a bunch of log messages beeing logged. We are looking for a specific one.
 				timeout := time.After(time.Millisecond * 500)
-				var success = false
+				success := false
 				for !success {
 					for _, v := range hook.AllEntries() {
 						s, err := v.String()
@@ -1050,7 +1058,7 @@ func TestIdentitySchemaValidation(t *testing.T) {
 						t.Fatal("the test could not complete as the context timed out before the file watcher updated")
 					case <-timeout:
 						t.Fatal("Expected log line was not encountered within specified timeout")
-					default: //nothing
+					default: // nothing
 					}
 				}
 

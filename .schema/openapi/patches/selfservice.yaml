@@ -25,6 +25,12 @@
       password: "#/components/schemas/updateRegistrationFlowWithPasswordMethod"
       oidc: "#/components/schemas/updateRegistrationFlowWithOidcMethod"
       webauthn: "#/components/schemas/updateRegistrationFlowWithWebAuthnMethod"
+- op: add
+  path: /components/schemas/RegistrationFlowState/enum
+  value:
+    - choose_method
+    - sent_email
+    - passed_challenge
 # end
 
 # All modifications for the login flow
@@ -48,6 +54,12 @@
       totp: "#/components/schemas/updateLoginFlowWithTotpMethod"
       webauthn: "#/components/schemas/updateLoginFlowWithWebAuthnMethod"
       lookup_secret: "#/components/schemas/updateLoginFlowWithLookupSecretMethod"
+- op: add
+  path: /components/schemas/LoginFlowState/enum
+  value:
+    - choose_method
+    - sent_email
+    - passed_challenge
 # end
 
 # All modifications for the recovery flow
@@ -66,7 +78,7 @@
       link: "#/components/schemas/updateRecoveryFlowWithLinkMethod"
       code: "#/components/schemas/updateRecoveryFlowWithCodeMethod"
 - op: add
-  path: /components/schemas/recoveryFlowState/enum
+  path: /components/schemas/RecoveryFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -89,7 +101,7 @@
       link: "#/components/schemas/updateVerificationFlowWithLinkMethod"
       code: "#/components/schemas/updateVerificationFlowWithCodeMethod"
 - op: add
-  path: /components/schemas/verificationFlowState/enum
+  path: /components/schemas/VerificationFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -121,7 +133,7 @@
       webauthn: "#/components/schemas/updateSettingsFlowWithWebAuthnMethod"
       lookup_secret: "#/components/schemas/updateSettingsFlowWithLookupMethod"
 - op: add
-  path: /components/schemas/settingsFlowState/enum
+  path: /components/schemas/SettingsFlowState/enum
   value:
     - show_form
     - success

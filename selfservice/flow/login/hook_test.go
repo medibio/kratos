@@ -33,7 +33,14 @@ func TestLoginExecutor(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
-	for _, strategy := range identity.AllCredentialTypes {
+	for _, strategy := range []identity.CredentialsType{
+		identity.CredentialsTypePassword,
+		identity.CredentialsTypeOIDC,
+		identity.CredentialsTypeTOTP,
+		identity.CredentialsTypeWebAuthn,
+		identity.CredentialsTypeLookup,
+		identity.CredentialsTypeCodeAuth,
+	} {
 		strategy := strategy
 
 		t.Run("strategy="+strategy.String(), func(t *testing.T) {
