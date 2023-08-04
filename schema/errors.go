@@ -307,7 +307,7 @@ func NewTraitsMismatch() error {
 func NewRegistrationCodeInvalid() error {
 	return errors.WithStack(&ValidationError{
 		ValidationError: &jsonschema.ValidationError{
-			Message:     `the registration code is invalid or has already been used. Please try again.`,
+			Message:     `the provided code is invalid or has already been used. Please try again.`,
 			InstancePtr: "#/",
 		},
 		Messages: new(text.Messages).Add(text.NewErrorValidationRegistrationCodeInvalidOrAlreadyUsed()),
@@ -317,7 +317,7 @@ func NewRegistrationCodeInvalid() error {
 func NewLoginCodeInvalid() error {
 	return errors.WithStack(&ValidationError{
 		ValidationError: &jsonschema.ValidationError{
-			Message:     `the login code is invalid or has already been used. Please try again.`,
+			Message:     `the provided code is invalid or has already been used. Please try again.`,
 			InstancePtr: "#/",
 		},
 		Messages: new(text.Messages).Add(text.NewErrorValidationLoginCodeInvalidOrAlreadyUsed()),

@@ -6,8 +6,6 @@ package hook
 import (
 	"net/http"
 
-	"github.com/pkg/errors"
-
 	"github.com/ory/kratos/driver/config"
 	"github.com/ory/kratos/identity"
 	"github.com/ory/kratos/selfservice/flow/login"
@@ -52,7 +50,7 @@ func (cv *CodeAddressVerifier) ExecuteLoginPostHook(_ http.ResponseWriter, r *ht
 
 	loginCode, err := cv.r.LoginCodePersister().GetUsedLoginCode(r.Context(), f.GetID())
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	for idx := range s.Identity.VerifiableAddresses {
@@ -61,7 +59,7 @@ func (cv *CodeAddressVerifier) ExecuteLoginPostHook(_ http.ResponseWriter, r *ht
 			va.Verified = true
 			va.Status = identity.VerifiableAddressStatusCompleted
 			if err := cv.r.PrivilegedIdentityPool().UpdateVerifiableAddress(r.Context(), &va); err != nil {
-				return errors.WithStack(err)
+				return err
 			}
 			break
 		}
@@ -76,7 +74,7 @@ func (cv *CodeAddressVerifier) ExecutePostRegistrationPostPersistHook(w http.Res
 
 	recoveryCode, err := cv.r.RegistrationCodePersister().GetUsedRegistrationCode(r.Context(), a.GetID())
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	for idx := range s.Identity.VerifiableAddresses {
@@ -85,7 +83,7 @@ func (cv *CodeAddressVerifier) ExecutePostRegistrationPostPersistHook(w http.Res
 			va.Verified = true
 			va.Status = identity.VerifiableAddressStatusCompleted
 			if err := cv.r.PrivilegedIdentityPool().UpdateVerifiableAddress(r.Context(), &va); err != nil {
-				return errors.WithStack(err)
+				return err
 			}
 			break
 		}

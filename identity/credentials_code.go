@@ -16,7 +16,7 @@ const (
 
 // CredentialsOTP represents an OTP code
 //
-// swagger:model identityCredentialsOTP
+// swagger:model identityCredentialsCode
 type CredentialsCode struct {
 	// The type of the address for this code
 	AddressType CodeAddressType `json:"address_type"`

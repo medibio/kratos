@@ -175,6 +175,7 @@ func NewFlow(conf *config.Config, exp time.Duration, csrf string, r *http.Reques
 			r.URL.Query().Get("aal"),
 			string(identity.AuthenticatorAssuranceLevel1)))),
 		InternalContext: []byte("{}"),
+		State:           flow.StateChooseMethod,
 	}, nil
 }
 

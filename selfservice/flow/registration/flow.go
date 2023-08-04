@@ -161,6 +161,7 @@ func NewFlow(conf *config.Config, exp time.Duration, csrf string, r *http.Reques
 		CSRFToken:       csrf,
 		Type:            ft,
 		InternalContext: []byte("{}"),
+		State:           flow.StateChooseMethod,
 	}, nil
 }
 

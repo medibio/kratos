@@ -150,7 +150,7 @@ func (s *Strategy) Register(w http.ResponseWriter, r *http.Request, f *registrat
 		TransientPayload: p.TransientPayload,
 	})
 
-	codeManager.RegisterCreateCodeState(func(ctx context.Context, p *CodeStateManagerPayload) error {
+	codeManager.SetCreateCodeHandler(func(ctx context.Context, p *CodeStateManagerPayload) error {
 		s.deps.Logger().
 			WithSensitiveField("traits", p.Traits).
 			WithSensitiveField("transient_paylaod", p.TransientPayload).
@@ -206,7 +206,7 @@ func (s *Strategy) Register(w http.ResponseWriter, r *http.Request, f *registrat
 		return errors.WithStack(flow.ErrCompletedByStrategy)
 	})
 
-	codeManager.RegisterVerifyCodeState(func(ctx context.Context, p *CodeStateManagerPayload) error {
+	codeManager.SetCodeVerifyHandler(func(ctx context.Context, p *CodeStateManagerPayload) error {
 		s.deps.Logger().
 			WithSensitiveField("traits", p.Traits).
 			WithSensitiveField("transient_payload", p.TransientPayload).
@@ -253,7 +253,7 @@ func (s *Strategy) Register(w http.ResponseWriter, r *http.Request, f *registrat
 		return nil
 	})
 
-	codeManager.RegisterAlreadyValidatedCodeState(func(ctx context.Context, _ *CodeStateManagerPayload) error {
+	codeManager.SetCodeDoneHandler(func(ctx context.Context, _ *CodeStateManagerPayload) error {
 		return errors.WithStack(schema.NewNoRegistrationStrategyResponsible())
 	})
 

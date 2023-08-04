@@ -145,6 +145,7 @@ func ParseCredentialsType(in string) (CredentialsType, bool) {
 	return "", false
 }
 
+// swagger:model identityCredentialIdentifierAddressType
 type CredentialsIdentifierAddressType string
 
 const (

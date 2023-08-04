@@ -13,7 +13,7 @@ package flow
 // - show_form: a form is shown to the user to perform the flow
 // - success: the flow has been completed successfully
 //
-// swagger:enum SelfServiceFlowState
+// swagger:enum selfServiceFlowState
 type State string
 
 // #nosec G101 -- only a key constant

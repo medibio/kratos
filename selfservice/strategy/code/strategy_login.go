@@ -135,7 +135,7 @@ func (s *Strategy) Login(w http.ResponseWriter, r *http.Request, f *login.Flow, 
 		Code:       p.Code,
 	})
 
-	codeManager.RegisterCreateCodeState(func(ctx context.Context, p *CodeStateManagerPayload) error {
+	codeManager.SetCreateCodeHandler(func(ctx context.Context, p *CodeStateManagerPayload) error {
 		s.deps.Logger().
 			WithSensitiveField("identifier", p.Identifier).
 			Debug("Creating login code state.")
@@ -158,16 +158,16 @@ func (s *Strategy) Login(w http.ResponseWriter, r *http.Request, f *login.Flow, 
 			}
 		}
 
-		addresse := []Address{
+		addresses := []Address{
 			{
 				To:  identifier,
-				Via: identity.CodeAddressType(string(cred.IdentifierAddressType)),
+				Via: identity.CodeAddressType(cred.IdentifierAddressType),
 			},
 		}
 
 		// kratos only supports `email` identifiers at the moment with the code method
 		// this is validated in the identity validation step above
-		if err := s.deps.CodeSender().SendCode(ctx, f, i, addresse...); err != nil {
+		if err := s.deps.CodeSender().SendCode(ctx, f, i, addresses...); err != nil {
 			return errors.WithStack(err)
 		}
 
@@ -183,7 +183,7 @@ func (s *Strategy) Login(w http.ResponseWriter, r *http.Request, f *login.Flow, 
 			return errors.WithStack(err)
 		}
 
-		if err := s.NewCodeUINodes(r, f, json.RawMessage(nodeData)); err != nil {
+		if err := s.NewCodeUINodes(r, f, nodeData); err != nil {
 			return err
 		}
 
@@ -203,7 +203,7 @@ func (s *Strategy) Login(w http.ResponseWriter, r *http.Request, f *login.Flow, 
 		return errors.WithStack(flow.ErrCompletedByStrategy)
 	})
 
-	codeManager.RegisterVerifyCodeState(func(ctx context.Context, p *CodeStateManagerPayload) error {
+	codeManager.SetCodeVerifyHandler(func(ctx context.Context, p *CodeStateManagerPayload) error {
 		s.deps.Logger().
 			WithSensitiveField("code", p.Code).
 			WithSensitiveField("identifier", p.Identifier).
@@ -242,7 +242,7 @@ func (s *Strategy) Login(w http.ResponseWriter, r *http.Request, f *login.Flow, 
 		return nil
 	})
 
-	codeManager.RegisterAlreadyValidatedCodeState(func(ctx context.Context, _ *CodeStateManagerPayload) error {
+	codeManager.SetCodeDoneHandler(func(ctx context.Context, _ *CodeStateManagerPayload) error {
 		return s.HandleLoginError(w, r, f, &p, errors.WithStack(schema.NewNoLoginStrategyResponsible()))
 	})
 

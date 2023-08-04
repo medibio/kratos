@@ -257,15 +257,15 @@ func (p *Persister) UseRecoveryCode(ctx context.Context, fID uuid.UUID, codeVal 
 	}
 
 	if recoveryCode == nil {
-		return nil, code.ErrCodeNotFound
+		return nil, errors.WithStack(code.ErrCodeNotFound)
 	}
 
 	if recoveryCode.IsExpired() {
-		return nil, flow.NewFlowExpiredError(recoveryCode.ExpiresAt)
+		return nil, errors.WithStack(flow.NewFlowExpiredError(recoveryCode.ExpiresAt))
 	}
 
 	if recoveryCode.WasUsed() {
-		return nil, code.ErrCodeAlreadyUsed
+		return nil, errors.WithStack(code.ErrCodeAlreadyUsed)
 	}
 
 	return recoveryCode, nil

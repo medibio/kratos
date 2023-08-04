@@ -733,7 +733,6 @@ func (p *Config) SelfServiceStrategy(ctx context.Context, strategy string) *Self
 	}
 
 	basePath := fmt.Sprintf("%s.%s", ViperKeySelfServiceStrategyConfig, strategy)
-
 	enabledKey := fmt.Sprintf("%s.enabled", basePath)
 	s := &SelfServiceStrategy{
 		Enabled: pp.Bool(enabledKey),

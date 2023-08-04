@@ -114,7 +114,6 @@ func MethodEnabledAndAllowed(ctx context.Context, flowName FlowName, expected, a
 	}
 
 	var ok bool
-
 	if strings.EqualFold(actual, identity.CredentialsTypeCodeAuth.String()) {
 		switch flowName {
 		case RegistrationFlow:
@@ -129,7 +128,7 @@ func MethodEnabledAndAllowed(ctx context.Context, flowName FlowName, expected, a
 	}
 
 	if !ok {
-		return herodot.ErrNotFound.WithReason(strategy.EndpointDisabledMessage)
+		return errors.WithStack(herodot.ErrNotFound.WithReason(strategy.EndpointDisabledMessage))
 	}
 
 	return nil

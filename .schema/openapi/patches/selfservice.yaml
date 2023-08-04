@@ -26,7 +26,7 @@
       oidc: "#/components/schemas/updateRegistrationFlowWithOidcMethod"
       webauthn: "#/components/schemas/updateRegistrationFlowWithWebAuthnMethod"
 - op: add
-  path: /components/schemas/RegistrationFlowState/enum
+  path: /components/schemas/registrationFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -55,7 +55,7 @@
       webauthn: "#/components/schemas/updateLoginFlowWithWebAuthnMethod"
       lookup_secret: "#/components/schemas/updateLoginFlowWithLookupSecretMethod"
 - op: add
-  path: /components/schemas/LoginFlowState/enum
+  path: /components/schemas/loginFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -78,7 +78,7 @@
       link: "#/components/schemas/updateRecoveryFlowWithLinkMethod"
       code: "#/components/schemas/updateRecoveryFlowWithCodeMethod"
 - op: add
-  path: /components/schemas/RecoveryFlowState/enum
+  path: /components/schemas/recoveryFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -101,7 +101,7 @@
       link: "#/components/schemas/updateVerificationFlowWithLinkMethod"
       code: "#/components/schemas/updateVerificationFlowWithCodeMethod"
 - op: add
-  path: /components/schemas/VerificationFlowState/enum
+  path: /components/schemas/verificationFlowState/enum
   value:
     - choose_method
     - sent_email
@@ -133,7 +133,7 @@
       webauthn: "#/components/schemas/updateSettingsFlowWithWebAuthnMethod"
       lookup_secret: "#/components/schemas/updateSettingsFlowWithLookupMethod"
 - op: add
-  path: /components/schemas/SettingsFlowState/enum
+  path: /components/schemas/settingsFlowState/enum
   value:
     - show_form
     - success

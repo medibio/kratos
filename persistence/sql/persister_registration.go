@@ -163,20 +163,20 @@ func (p *Persister) UseRegistrationCode(ctx context.Context, flowID uuid.UUID, r
 	}
 
 	if registrationCode == nil {
-		return nil, code.ErrCodeNotFound
+		return nil, errors.WithStack(code.ErrCodeNotFound)
 	}
 
 	if registrationCode.IsExpired() {
-		return nil, flow.NewFlowExpiredError(registrationCode.ExpiresAt)
+		return nil, errors.WithStack(flow.NewFlowExpiredError(registrationCode.ExpiresAt))
 	}
 
 	if registrationCode.WasUsed() {
-		return nil, code.ErrCodeAlreadyUsed
+		return nil, errors.WithStack(code.ErrCodeAlreadyUsed)
 	}
 
 	// ensure that the identifiers extracted from the traits are contained in the registration code
 	if !slice.Contains(addresses, registrationCode.Address) {
-		return nil, code.ErrCodeNotFound
+		return nil, errors.WithStack(code.ErrCodeNotFound)
 	}
 
 	return registrationCode, nil

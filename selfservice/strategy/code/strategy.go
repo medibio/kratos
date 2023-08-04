@@ -342,15 +342,15 @@ func NewCodeStateManager(f flow.Flow, payload *CodeStateManagerPayload) *CodeSta
 	}
 }
 
-func (c *CodeStateManager) RegisterCreateCodeState(fn CreateCodeState) {
+func (c *CodeStateManager) SetCreateCodeHandler(fn CreateCodeState) {
 	c.createCodeState = fn
 }
 
-func (c *CodeStateManager) RegisterVerifyCodeState(fn ValidateCodeState) {
+func (c *CodeStateManager) SetCodeVerifyHandler(fn ValidateCodeState) {
 	c.verifyCodeState = fn
 }
 
-func (c *CodeStateManager) RegisterAlreadyValidatedCodeState(fn AlreadyValidatedCodeState) {
+func (c *CodeStateManager) SetCodeDoneHandler(fn AlreadyValidatedCodeState) {
 	c.alreadyValidatedCodeState = fn
 }
 

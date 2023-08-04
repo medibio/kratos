@@ -93,15 +93,14 @@ func (p *Persister) CreateLoginCode(ctx context.Context, codeParams *code.Create
 	ctx, span := p.r.Tracer(ctx).Tracer().Start(ctx, "persistence.sql.CreateLoginCode")
 	defer span.End()
 
-	now := time.Now()
-
+	now := time.Now().UTC()
 	loginCode := &code.LoginCode{
 		IdentityID:  codeParams.IdentityID,
 		Address:     codeParams.Address,
 		AddressType: codeParams.AddressType,
 		CodeHMAC:    p.hmacValue(ctx, codeParams.RawCode),
 		IssuedAt:    now,
-		ExpiresAt:   now.UTC().Add(p.r.Config().SelfServiceCodeMethodLifespan(ctx)),
+		ExpiresAt:   now.Add(p.r.Config().SelfServiceCodeMethodLifespan(ctx)),
 		FlowID:      codeParams.FlowID,
 		NID:         p.NetworkID(ctx),
 		ID:          uuid.Nil,
@@ -152,7 +151,6 @@ func (p *Persister) UseLoginCode(ctx context.Context, flowID uuid.UUID, identity
 		}
 
 	secrets:
-
 		for _, secret := range p.r.Config().SecretsSession(ctx) {
 			suppliedCode := []byte(p.hmacValueWithSecret(ctx, codeVal, secret))
 			for i := range loginCodes {
@@ -178,15 +176,15 @@ func (p *Persister) UseLoginCode(ctx context.Context, flowID uuid.UUID, identity
 	}
 
 	if loginCode == nil {
-		return nil, code.ErrCodeNotFound
+		return nil, errors.WithStack(code.ErrCodeNotFound)
 	}
 
 	if loginCode.IsExpired() {
-		return nil, flow.NewFlowExpiredError(loginCode.ExpiresAt)
+		return nil, errors.WithStack(flow.NewFlowExpiredError(loginCode.ExpiresAt))
 	}
 
 	if loginCode.WasUsed() {
-		return nil, code.ErrCodeAlreadyUsed
+		return nil, errors.WithStack(code.ErrCodeAlreadyUsed)
 	}
 
 	return loginCode, nil
@@ -205,7 +203,7 @@ func (p *Persister) GetUsedLoginCode(ctx context.Context, flowID uuid.UUID) (*co
 	defer span.End()
 
 	var loginCode code.LoginCode
-	if err := p.Connection(ctx).RawQuery(fmt.Sprintf("SELECT * FROM %s WHERE selfservice_login_flow_id = ? AND used_at IS NOT NULL AND nid = ?", new(code.LoginCode).TableName(ctx)), flowID, p.NetworkID(ctx)).First(&loginCode); err != nil {
+	if err := p.Connection(ctx).RawQuery(fmt.Sprintf("SELECT * FROM %s WHERE selfservice_login_flow_id = ? AND nid = ? AND used_at IS NOT NULL", new(code.LoginCode).TableName(ctx)), flowID, p.NetworkID(ctx)).First(&loginCode); err != nil {
 		return nil, sqlcon.HandleError(err)
 	}
 	return &loginCode, nil
