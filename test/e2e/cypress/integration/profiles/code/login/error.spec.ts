@@ -42,7 +42,7 @@ context("Login error messages with code method", () => {
       cy.clearAllCookies()
     })
 
-    it("should show error message ewhen account identifier does not exist", () => {
+    it("should show error message when account identifier does not exist", () => {
       const email = gen.email()
 
       cy.get(
