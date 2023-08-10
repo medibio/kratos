@@ -29,7 +29,7 @@ type (
 		Hydra() Hydra
 	}
 	Hydra interface {
-		AcceptLoginRequest(ctx context.Context, loginChallenge string, subject string, amr session.AuthenticationMethods) (string, error)
+		AcceptLoginRequest(ctx context.Context, loginChallenge, subject, sessionID string, amr session.AuthenticationMethods) (string, error)
 		GetLoginRequest(ctx context.Context, loginChallenge string) (*hydraclientgo.OAuth2LoginRequest, error)
 	}
 	DefaultHydra struct {
@@ -84,11 +84,13 @@ func (h *DefaultHydra) getAdminAPIClient(ctx context.Context) (hydraclientgo.OAu
 	return hydraclientgo.NewAPIClient(configuration).OAuth2Api, nil
 }
 
-func (h *DefaultHydra) AcceptLoginRequest(ctx context.Context, loginChallenge string, subject string, amr session.AuthenticationMethods) (string, error) {
+func (h *DefaultHydra) AcceptLoginRequest(ctx context.Context, loginChallenge, subject, sessionID string, amr session.AuthenticationMethods) (string, error) {
 	remember := h.d.Config().SessionPersistentCookie(ctx)
 	rememberFor := int64(h.d.Config().SessionLifespan(ctx) / time.Second)
 
 	alr := hydraclientgo.NewAcceptOAuth2LoginRequest(subject)
+	// TODO: Blocked on Hydra client update
+	// alr.SessionID = sessionID
 	alr.Remember = &remember
 	alr.RememberFor = &rememberFor
 	alr.Amr = []string{}

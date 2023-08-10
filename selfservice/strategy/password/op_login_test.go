@@ -340,9 +340,9 @@ type AcceptWrongSubject struct {
 	h *hydra.DefaultHydra
 }
 
-func (h *AcceptWrongSubject) AcceptLoginRequest(ctx context.Context, loginChallenge string, subject string, amr session.AuthenticationMethods) (string, error) {
+func (h *AcceptWrongSubject) AcceptLoginRequest(ctx context.Context, loginChallenge string, subject string, sessionID string, amr session.AuthenticationMethods) (string, error) {
 	hackerman := uuid.Must(uuid.NewV4())
-	return h.h.AcceptLoginRequest(ctx, loginChallenge, hackerman.String(), amr)
+	return h.h.AcceptLoginRequest(ctx, loginChallenge, hackerman.String(), "", amr)
 }
 
 func (h *AcceptWrongSubject) GetLoginRequest(ctx context.Context, loginChallenge string) (*hydraclientgo.OAuth2LoginRequest, error) {

@@ -249,7 +249,7 @@ func (e *HookExecutor) PostRegistrationHook(w http.ResponseWriter, r *http.Reque
 
 	finalReturnTo := returnTo.String()
 	if a.OAuth2LoginChallenge != "" {
-		callbackURL, err := e.d.Hydra().AcceptLoginRequest(r.Context(), string(a.OAuth2LoginChallenge), i.ID.String(), s.AMR)
+		callbackURL, err := e.d.Hydra().AcceptLoginRequest(r.Context(), string(a.OAuth2LoginChallenge), i.ID.String(), s.ID.String(), s.AMR)
 		if err != nil {
 			return err
 		}
